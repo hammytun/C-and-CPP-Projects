@@ -1,0 +1,81 @@
+A. CalcYouLater by Harrison Tun (htun01)
+
+B. 
+The purpose of this program is to implement an RPN calculator that can use
+user inputted commands.
+
+C. 
+TA Office Hours from Brendan Roy aka BroyTheExplorer and Peter 
+
+D. 
+The files provided include:
+DatumStack.h - the interface of DatumStack
+DatumStack.cpp - the implementation of DatumStack
+Parser.h - the interface of parser.cpp
+parser.cpp - the implementation of parser. Its purpose is to get a string and 
+verify that the string is a valid rsrtring with equal amount of curly brackets
+and one space between each character
+RPNCalc.h - the interface of the RPNCalc implementation
+RPNCalc.cpp - the implementation of RPNCalc. Its purpose is to run and handle
+any command that the user inputs
+unit_tests.h - unit testing for functions in parser and DatumStack
+test_if.cylc - input file testing the if operation
+arithmetic.cylc - testing all of the arithmetic functions of RPNCalc
+single_operators.cylc - testing simple commands
+rstring_commands.cylc - testing rstring reading and execution
+simple_commands.cylc - testing simple comparisons and keyword functions
+divide.cylc - input file to test divide
+E. 
+Compile/Run - compile using make CalcYouLater and run the program by using 
+./CalcYouLater
+
+F.
+Architectural Overview:
+I represented the RPN Calculator using 2 classes and an extra file that 
+handled parsing an rstring. The first class that was implemented was the 
+DatumStack class which handled all of the stack operations that RPN calc used.
+Functions that the DatumStack class included were functions such as pop, push,
+size, etc. These functions were used in my RPNCalc class. Secondly, the parser
+.h and .cpp files were used to parse an input stream into an rstring and 
+return the rstring, mkaing sure the rstring included equal number of open 
+brackets and closing brackets as well as no extra whitespace in the rstring.
+Finally, my RPN calc class used all files such as the Datum, DatumStack, 
+and parser. By doing this, I was able to manipulate stack operations in 
+RPNcalc and implement clean rstrings.
+
+G.
+The ADT I used in this project was a stack and the data structure used to 
+implement the stack was an array/vector. The stack was built using a vector 
+because of its advantages with using the push and pop methods which are very 
+important in the RPN calculator approach where the operands and operators use 
+LIFO. The stack's LIFO behavior is one of the most important features of the 
+stack. The LIFO behavior means the most recently added element is the first
+one to be removed. Addtionally, the Datum class is important to the ADT.
+The Datum class provides a way to handle different types of data - bools
+, ints, and rstrings. An interesting algorithm comes from the RPN calc 
+evaluation algorithm. The RPN calc algorithm processes commands in the order
+they appear, pushing operands onto the stack and applying operators to 
+opperands popped from the stack. Additionally, handling the if command had a 
+very complex algorithm. The if command pops 3 elements off the stack: the 
+test condition (boolean), a true case, and a false case. Depending on the
+condition, the algorith executes either true or false block which handles each
+command in the block. 
+
+H. 
+In phase 1, I made a unit_testing file which tested each function of my
+DatumStack and parser implementations. I unit_tested each function in my 
+DaumStack class and tested mutliple possibilities for my parser function. 
+The unit test for my parseRstring tested for left out white space and 
+incorrectly matched curly braces. For phase 2, I made multiple test input 
+files that test all functions of the RPN calc functionality. I created a 
+test_if.cylc input file that tested my programs ability to read in an rstring
+and also read in an incorrect rstring (testing its error messaging). I also
+made test files for handling arithmetic and division (especially mod and 
+divide by 0). I made an input file that tested all of the one word commands 
+such as swap, drop, and not. I made another input file for handling the 
+rstrings for my exec function, focusing on the output and the error messaging.
+Finally, for debugging, I made print stack function in my RPN calc class which
+was used to print the contents of the stack to see what was being pushed and 
+popped off of the stack. 
+
+I. 15 hours
