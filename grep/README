@@ -1,0 +1,252 @@
+/**********************************************************
+* Project: Gerp
+* CS 15
+* README
+* Harrison Tun and Jonah Pflaster
+* htun01 and jpflas01
+**********************************************************/
+
+Phase One summary:
+For phase one, we implemented the stripAlphaNum and traverseDirectory 
+functions. In the stripAlphaNum function, we included the cctype library which
+provides the isalnum function. The isalnum function returns a boolean value 
+that indicates if a character is an alphanumeric character. For the 
+traverseDirectory function, we created a recursive helper function that 
+recieves a node pointer to the current DirNode and a its current file path. 
+By doing this, the funciton prints the full path of all files under the 
+current node.
+
+Purpose of the Program:
+This program is designed to efficiently manage and search through large 
+collections of text files and directories, providing a means to index and 
+retrieve word occurrences. The program ensures fast and reliable text searches.
+Using our own hash table structure, it processes each file by reading its 
+content line by line, stripping non alphanumeric characters from all words, and
+inserting these clean words into our hash table along with their corresponding 
+file index and line number. The program supports both case sensitive and 
+insensitive query searches, allowing users to find occurrences based on their 
+preferences. 
+
+Acknowledgements:
+TAs Brendan Roy and Peter Morganelli
+
+Files Provided:
+Makefile: Contains instructions to build and compile the gerp program
+DirNode.h: Interface of the DirNode class Each DirNode will be a folder and 
+contain info of files inside that directory.
+FSTree.h:Interface of the FSTree class. This class contains an n-ary tree to 
+represent a file system
+gerpProcessor.h: Header file for gerpProcessor.cpp. It declares all the 
+necessary classes and functions that handle the overall logic of the program
+gerpProcessor.cpp: Implements the functions declared in the .h file 
+hashTable.h: Header file for hashTable.h. It declares all the 
+necessary classes and functions that handle the overall logic of the hashTable
+hashTable.cpp: Implements the functions declared in the .h file
+main.cpp: Entry point of the program. Sets up command line arguments.
+unit_test: Test functionality of specific functions in gerp program.
+input.txt: Test input entries for gerp program. Used for diffing output of demo
+and our program.
+testdir: A directory containing test files to validate program's functionality
+
+How to compile program:
+run make or make gerp then run ./gerp fileDirectory OutputFile 
+
+Architectural Overview:
+This program was designed to efficiently manage and search through large 
+collections of text files. (Main.cpp) acts as the entry point, initializing 
+key components and processing command line arguments. The IndexBuilder class 
+which is included in gerpProcessor.h and gerpProcessor.cpp handles the file 
+processing, index creation, and search logic by reading each file line by line.
+Additionally, each word is cleaned of all nonalphanumeric characters, where 
+they are then inserted into the hashTable. The hashTable (hashTable.h and 
+hashTable.cpp) provides the core data structure for storing and managing word 
+occurrences, trying to maximize insertion, lookup and resizing operations. 
+Together, these files enable the program to perform case sensitive and case 
+insensitive searches, offering fast and accurate retrievals of each word 
+occurrence. 
+
+The main function initializes the IndexBuilder with command-line arguments 
+and delegates the indexing and query tasks. The FSTree implementation 
+facilitates directory traversal by providing a pointer to the root DirNode.
+
+For querying, the program uses a loop to accept commands and processes user 
+inputs to perform case-sensitive or case-insensitive searches, directing 
+results to the specified output file.
+
+Data Structures and Algorithms:
+Hash Table: Stores words and their occurrences in a vector of buckets. 
+Each bucket contains wordVars, which hold a word and its locations (file 
+index and line number). A custom hash function ensures even distribution across
+buckets.
+Vector: Used for storing file content and organizing the hash table 
+buckets.
+FSTree and DirNode: Provided by the course, these support directory 
+traversal and file discovery.
+
+Data Structures and Algorithms:
+
+Hash Table: Stores words and their occurrences in a vector of buckets. 
+Each bucket contains a vector of wordVars, which hold a word and its locations 
+(file index and line number). The hash function ensures even distribution 
+across buckets.
+
+Vector: Used for storing file content, organizing the hash table buckets, and
+storing where a word appear with an int pair of file index and line number
+
+FSTree and DirNode: Provided by the course, these support directory 
+traversal and file discovery.
+
+wordVars: Struct which holds string key (which is the stripped word) and the
+values which is a vector of pairs of ints (the first int corresponds to the
+file index and the second is the line number)
+
+fileVars: Struct which holds a string of the filename and a vector of strings
+which holds the line content on the corresponding index line number
+
+fileTable: The file table is just a vector of fileVars, its importance is for
+fast retrival of a specific files fileVar which then holds the files path and
+the content of the file. The files can also now be accessed through an int
+corresponding to the index rather than the string path
+
+wordTable: Vector of vectors of wordVars, this is main 'HashTable' which uses 
+words as a string corresponding to a vector of pairs of ints as the value 
+(discussed above)
+
+set: The set is used in our case insensitive get word. Originally we were going
+to return a vector of wordVars and then iterate through that but we realized
+that there was a issue of if a word appeared twice on the same line but as a 
+different version. Thus we came to a set so that the a pair of file index
+and line number can only appear once. Now we return a set of pairs for getting
+the information corresponding to a word when queried for insensitive. 
+
+   The most important part of gerp is the hash table ADT, which we implemented
+using a vector of vectors of wordVars. The hash table stores an 
+index of words, mapping each word to its occurrences across files. Each 
+occurrence is represented as a pair of integers: the file index and the line 
+number. The hash table uses a hash function to distribute words across buckets 
+efficiently, ensuring an average O(1) complexity for lookups, insertions, and 
+deletions. Each bucket contains a vector of wordVars structs, where each 
+wordVars object stores a word and its occurrences as a sorted vector of pairs. 
+This design supports both case-sensitive and case-insensitive searches while
+maintaining fast retrieval. The hash table dynamically resizes when its load 
+factor exceeds 0.75, doubling its capacity and redistributing elements. This 
+ensures the program remains scalable and performant, even for large datasets. 
+The reasoning we have a vector of vectors of wordVars rather than a vector of 
+wordVars is because our hash table uses chaining. Since we use the lowercase
+version of a word as our key for hashing a word to a bucket this causes
+collisions between the same word with a different sensitivity such as THE vs
+the.
+   Another important data structure is the vector, which has multiple uses. Our
+vectors are used for three main purposes: storing file content line by line, 
+storing pairs of ints, and organizing hash table buckets. For file content, 
+vectors allow O(1) access time for individual lines, making retrieval 
+efficient. Their dynamic resizing capabilities are crucial for handling varying
+amounts of data without needing a predefined size. In the hash table, vectors 
+serve as the storage for buckets, ensuring contiguous and dynamic organization.
+This choice was motivated by the simplicity and efficiency of vectors, which 
+make them ideal for scenarios requiring quick access and flexible growth. The 
+storage of the pairs of ints was made for the same reason, quick access to
+all the file indicies and line numbers from a word. 
+   The next data structure is the file tree, implemented with the FSTree 
+and DirNode classes provided by the course. This structure enables recursive 
+traversal of directories, starting from a root directory. Each DirNode object 
+represents a directory and provides access to its files and subdirectories. The 
+file tree supports operations to retrieve the root node and iterate through 
+nested structures. By using a recursive helper function, the program processes 
+files from complex directory hierarchies with ease. This hierarchical structure 
+mirrors the filesystem's organization, making it a natural choice for this 
+project.
+
+   Overall these data structures and ADTS are the backbone of our program.
+The hash table provides fast lookups for queries, the vector organizes data 
+dynamically, and the file tree efficiently handles nested directory structures.
+These data structures were chosen for their complementary roles in addressing 
+the challenges of indexing and querying large datasets.
+
+   Additional Use Cases:
+   - A hash table can be used for caching web pages, where URLs are mapped to 
+     cached data for quick retrieval, or in a compiler for managing symbol 
+     tables.
+   - A vector could store a dynamic list of shopping cart items, where frequent 
+     additions and removals are needed, or maintain a sequence of user actions 
+     in a game.
+   - A file tree is commonly employed in version control systems to manage 
+     repositories or visualize hierarchical directory structures.
+
+
+ Algorithm Overview:
+   The Gerp program’s indexing begins by traversing the root directory using 
+the FSTree and DirNode classes. For each file, the processFile function 
+reads its contents line by line. These lines are then inserted into the file 
+table which holds the file path and a vector of the lines, where the index of 
+the vectors corresponds to the line number and holds a string of the line. 
+Words are cleaned of non-alphanumeric characters using stripNonAlphaNum and 
+then inserted into the hash table. Each word is associated with its file index 
+and line number. Before inserting the word into the hash table we check for a 
+duplicate of the word on that same line. The hash table’s dynamic resizing 
+ensures efficient operations as the dataset grows.
+
+   The querying process prompts the user for input and processes commands in 
+real time. Users can perform case-sensitive or case-insensitive searches. For 
+case sensitive the specific wordVar struct which holds the specific version of 
+the word and the vector of pairs of ints is iterated through and used for 
+outputing the correct text. For case insensitive a vector of the wordVars is 
+used to iterate through each vector go into the wordVar and then iterate 
+through and output the correct text. The reason for this is because for 
+insensitive we want to output all versions of the word not just the version 
+that was queried. And the reason we can access this is due to us hashing the 
+lowercase version as the key. Queries are matched against the hash table, and 
+results are written to the output file. Special commands, such as changing the 
+output file or quitting the program, are also supported through either changing 
+the output file, or exiting the query and thus the program.
+
+   This design ensures the program handles diverse datasets efficiently while 
+providing robust querying capabilities to users.
+
+
+The hash table allows O(1) average-time complexity for word lookups, making it 
+ideal for indexing. Vectors provide dynamic resizing and efficient access, 
+simplifying storage and retrieval. The FSTree and DirNode classes 
+efficiently manage hierarchical directory structures.
+
+Testing:
+To ensure the correctness of the implementation, we tested the program with a 
+variety of scenarios:
+Basic functionality: Queries for words in small, simple files to ensure 
+correct indexing and retrieval.
+Edge cases:
+- Empty files: Verified that no words are indexed.
+- Files with special characters: Tested the stripNonAlphaNum function to 
+  ensure proper word extraction.
+- Case-insensitive queries: Confirmed that words are correctly matched 
+  regardless of case.
+Large directories: Tested scalability with directories containing many 
+files and large text content. Also used gerp_perf command to test time and 
+space for larger directories such as the gutenberg directories.
+
+Unit tests were written for core functions:
+- stripNonAlphaNum: Tested with strings containing leading, trailing, and 
+   interspersed non-alphanumeric characters.
+- insertWord and getWord: Verified correct insertion and retrieval of words
+   in the hash table.
+- traverseHelper: Ensured recursive directory traversal and correct file 
+   indexing.
+- and more basic functionalities that were vital parts of our program
+
+Tested for edge cases, such as missing files, invalid command-line arguments, 
+and unusual queries all by manual diff testing and input files
+
+testing files:
+input.txt 
+test.txt
+caseSens.txt
+
+
+Part that you found most difficult:
+The most challenging aspect was implementing the processFile function to 
+ensure proper handling of non-alphanumeric characters and case sensitivity. 
+Debugging the hash table resizing logic was also complex, as it required 
+careful management of rehashed elements to maintain performance.
+
+Time Spent:
+20 hours
