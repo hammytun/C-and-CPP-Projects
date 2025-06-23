@@ -1,0 +1,72 @@
+A. 
+Project 3: Zap by Harrison Tun (htun01)
+B. 
+The "zap" program compresses and decompresses text files using Huffman coding
+to reduce the amount of storage needed. By assigning shorter binary codes to 
+more frequent characters, it creates a compact binary representation of text 
+data, saving both space and potentially reducing file transmission times. 
+It saves the encoded data along with a serialized version of the Huffman tree, 
+ensuring that the original text can be exactly reconstructed during 
+decompression.
+C.
+TA Peoter Morganelli  and some dude that kept making me call him BROY. He 
+insisted that I even add the explorer, but he fixed my bug so I like him.
+D.
+HuffmanCoder.h: Header file that defines the interface for the HuffmanCoder 
+class, which manages the main Huffman encoding and decoding logic for the 
+zap program.
+HuffmanCoder.cpp: Implementation file for HuffmanCoder.h, containing the code 
+for compressing and decompressing files using the Huffman coding algorithm.
+main.cpp: Contains the main function, which handles command-line arguments, 
+validates them, and calls the appropriate functions in HuffmanCoder to either 
+compress (zap) or decompress (unzap) files.
+Makefile: Automates the build process for the zap program. Running make 
+compiles the program, producing an executable named zap.
+unit_tests.h: Contains unit tests to verify the correctness of individual 
+functions within the zap program, helping ensure reliable functionality for 
+encoding and decoding tasks.
+ZapUtil.h: interface that holds functions used for testing the functionality
+during zapping or unzapping. The file also includes functions that read and
+create a binary file.
+E. 
+run make or make zap then run ./zap zap InputFile OutputFile or ./zap unzap
+InputFile OutputFile
+F.
+The Huffman coding implementation uses several key ADTs: a priority 
+queue (min-heap), a tree, and a hash map (unordered_map).
+The data structures that were used ot implement these ADTs were: a min-heap 
+which is a data structure that ensures the node with the lowest frequency 
+is always at the top of the heap. This ensures the tree is built optimally.
+A HuffmanTreeNode structure is used to represent both leaf and internal nodes, 
+where leaf nodes store characters and frequencies, and internal nodes combine 
+child node frequencies. Finally, the hashmap was represented using an 
+unordered map to store the frequency of each character in the input, 
+enabling fast lookups and updates during frequency counting. 
+Huffman encoding is an algorithm that uses these structures to generate 
+binary codes for each character based on the tree's depth-first traversal. 
+Serialization and deserialization of the tree are handled by a preorder 
+traversal, storing internal nodes with 'I' and leaf nodes with 'L' followed 
+by the character. The algorithm has O(n log n) time complexity for tree 
+construction and O(n) for serialization and deserialization. 
+G. 
+I implemented both unit tests for individual functions and integrated tests 
+for the entire program. Each core function was tested, focusing on key areas 
+such as data structure manipulation and encoding/decoding processes.
+In testing the Huffman tree construction, I checked that characters with 
+higher frequencies were closer to the root. Custom test cases confirmed that 
+the priority queue correctly merged nodes with the smallest frequencies, 
+resulting in an optimal tree structure. For character encoding, I checked that 
+each character in test files received the correct binary code. I also handled 
+edge cases, such as files with a single unique character or empty files to 
+ensure the program responded correctly.
+For serialization and deserialization, I examined serialized strings to 
+confirm they accurately represented the Huffman tree structure. I then used 
+deserialization to reconstruct the tree and verified it matched the original. 
+My end-to-end testing involved full compression and decompression of files 
+like sentences.txt and all_conll_english.txt. I used diff to ensure that the 
+original and final outputs matched, confirming no data was lost during 
+encoding and decoding. I also used extra testing files to test edge cases such
+as singlet.txt and empty.txt which tested for compression and decompression 
+on empty and single character text files. 
+
+I. 10 hours
