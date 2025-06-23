@@ -1,0 +1,165 @@
+/**************************************************************
+ *
+ *                     README
+ *
+ *     	Assignment: um
+ *     	Authors:  Harrison Tun (htun01), Arman Kassam (akassa01)
+ *     	Date:     4/9/25
+ *
+ *
+ **************************************************************/
+
+Acknowledgements: TA Office Hours
+
+Progress: All parts of the UM are implemented
+
+Changes from design:
+There is no error module. Instead, we handle errors within the module. The 
+members of the forseen structs are slightly different. Finally, all the return 
+values for the operations functions are all void. 
+
+Architecture:
+Main Module <-> UM Module:
+The driver file begins and ends program execution by initializing the 
+UM. It does not control the internal logic of the UM loop which is handled in 
+the UM module.
+
+UM Module <-> Operations Module:
+The UM module handles instruction dispatching by calling functions in the 
+operations module, abstracting away the specifics of instruction execution.
+
+UM Module <-> Memory Module:
+The UM module accesses the program memory and supports memory-related operations
+through the memory module's interface.
+
+Operations Module <-> Memory Module:
+Operations that involve memory manipulation call functions in the memory module.
+Specifically, functions like mapping, unmapping, segmented store, etc. 
+are called.
+
+Unit Test Module <-> All Modules:
+The unit testing module verifies that each module satisfies its intended 
+abstraction, ensuring the overall functionality of the UM implementation
+
+Time to run 50 million instructions: Our program takes 1.649937 seconds to run 
+50 million instructions. We know this because we used the time.h standard 
+library to time our program. We created a counter that began right before the 
+first execution and incremented for every iteration of the execution loop. Once
+the counter reaches 50 million, we ended the timer, printed the exact time, and 
+returned.
+
+Unit Tests:
+halt.um:
+This test appends only a halt instruction to the program stream. It serves to 
+verify that when the UM encounters a halt, it terminates execution immediately 
+without executing any further instructions.
+
+halt-verbose.um:
+In this test, a halt instruction is appended at the beginning of the stream, 
+followed by several load-value and output instructions that would, if executed, 
+print the characters "B", "a", "d", "!", and a newline. Since the halt 
+instruction should stop execution, none of the subsequent instructions are 
+executed. This test checks that the halt instruction correctly prevents any 
+further operations.
+
+add.um:
+This test appends an add instruction followed by a halt. Its purpose is to 
+verify that the add operation correctly computes the sum of the values stored in
+the source registers and places the result in the target register.
+
+print-six.um:
+This test sets up the UM to compute an ASCII digit by loading 48 into one 
+register and 6 into another, then adding these values. It outputs the result, 
+which should correspond to the ASCII character '6'. This test confirms that 
+arithmetic operations can be used in conjunction with ASCII conversion.
+
+output-halt.um:
+This test verifies the load-value and output instructions by loading the ASCII 
+value 72 (for 'H') into a register, outputting it, and then halting. It ensures 
+that the output function correctly handles and prints a simple character.
+
+loadval-output.um:
+Similar to the previous test, this unit test uses the load-value instruction to
+load the ASCII value 88 and then outputs it before halting. It specifically 
+tests the correctness of the load-value operation and the subsequent output.
+
+add-full.um:
+This comprehensive test first loads two numeric values into registers and then 
+executes two successive add instructions to accumulate a result. It then loads 
+an offset into another register, adds the offset to the sum to convert the 
+number into its ASCII character, and outputs the resulting character. The test 
+ensures that multiple add operations interact correctly and that arithmetic 
+results can be properly converted to and output as ASCII characters.
+
+mul-test.um:
+This test verifies the multiplication operation. It loads the numbers 6 and 7 
+into registers, multiplies them using a three-register instruction, 
+and then outputs the product. The correct product (42) is expected, and the 
+output is verified by the corresponding character before halting.
+
+div-test.um:
+This test examines the division operation. It loads two values into registers, 
+divides them, and then adds an ASCII offset to convert the result into a 
+printable character before outputting it. The test confirms proper division and
+subsequent arithmetic handling.
+
+nand-test.um:
+This test checks the bitwise NAND operation by loading two predetermined 
+hexadecimal values (0xF0F0 and 0x0F0F) and applying the NAND operation on them.
+The program then halts. 
+
+input-output.um:
+This test involves the input and output instructions. It performs an input 
+instruction that reads a character into a register, immediately outputs that 
+same character, and then halts. This test validates that the UM correctly 
+handles reading from standard input and outputting the received value.
+
+cmov-zero.um:
+This test examines the conditional move instruction under a zero condition. 
+It first loads values corresponding to the characters 'A' and 'B' into registers
+and loads 0 as the condition. Since the condition is 0, the conditional move 
+should not transfer the value from the source register to the destination, and 
+the output should remain 'A'. This confirms that the conditional move behaves 
+correctly when the condition is false.
+
+cmov-nonzero.um:
+This test is similar to the previous one but uses a nonzero condition. With 'A'
+and 'B' loaded into registers, the conditional move should now transfer the 
+value from the source register to the destination register since the condition
+is true. The output is expected to be 'B', verifying the correct behavior when 
+the condition is nonzero.
+
+map-unmap.um:
+This test focuses on the memory mapping and unmapping functionality. It first 
+loads a segment size and then uses an ACTIVATE instruction to create a new 
+segment, storing its ID in a register. It then immediately calls an INACTIVATE 
+instruction to free that segment. The test verifies that segments are properly 
+allocated and deallocated and that unmapped segment IDs are captured for reuse.
+
+store-load.um:
+In this test, a segment is mapped with a specified size, and a load-value 
+instruction loads a character into a register. The test then uses a 
+segmented store to write this value to offset 0 of the mapped segment and uses a
+segmented load to read the value back into another register. Finally, it outputs
+the loaded value, expecting to see the character 'X'. This 
+test verifies the correct interaction between memory storage and retrieval 
+operations.
+
+loadprog.um:
+This unit test first computes a simple multiplication and outputs the result. It
+then maps a new memory segment (using ACTIVATE), and uses segmented load (SLOAD)
+and store (SSTORE) instructions to copy values from various offsets into this 
+new segment. Finally, a LOADP instruction is invoked to load the new segment as 
+the program (updating the program counter), before the test concludes with a 
+halt.
+
+We also built C-language tests in the unit tests.c module to test te individual
+functionality of functions. Most of the tests applied to memory, but we also
+tested file I/O and (outside of this module) tested the execution loop, program
+length, outputting the program to make sure it was the same, and all failure
+cases. 
+
+Time Spent:
+Analysis: 3 Hours
+Writing the design document: 4 Hours
+Debugging: 4 Hours
