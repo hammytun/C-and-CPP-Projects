@@ -1,0 +1,35 @@
+Brendan Roy {broy02} and Harrison Tun {htun01}
+
+Assignment Architecture:
+Modules:
+- 40image: The driver file; reads command line and runs appropriate methods to
+            both compress and decompress images. All modules use Pnm_ppm as a
+            way to hide secrets. e.g. all this module knows is that we use 
+            Pnm_ppm, which is obvious given we must read/write ppms
+- rgbconvertor: This converts between rgb and video component values for each
+                pixel and back again. Secrets kept: using UArray2_T as well as
+                we use Pnm_rgb structs
+- dct: This uses the discrete cosine transform and its inverse to quantize the
+        video component values. Secrets kept: quantization methods and how we
+        use UArray2_T for most of the computation
+- filehandler: Handles all the bitpacking and file I/O prep that needs to be
+                done for both compression and decompression. Secrets kept:
+                how we pack the bits / codewords.
+- bitpack: helper module for filehandler to corral all the integers into a 
+           single 32 bit codeword. It is generalizable though because it really
+           is designed for 64-bit codewords, but we don't need that.
+
+Each module holds its unique secret for both compression and decompression steps
+and we tried to have one module for each step of the process.
+
+Acknowledgments:
+TAs Ben, Sam H, Amelia, Sam S
+
+Implementation:
+Everything in this assignment should be working properly
+
+Time spent analyzing:
+10 hours
+
+Time spent implementing:
+10 hours
